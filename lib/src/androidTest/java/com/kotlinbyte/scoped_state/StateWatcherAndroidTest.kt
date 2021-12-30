@@ -66,7 +66,7 @@ class StateWatcherAndroidTest {
 
         runBlocking {
             launch {
-                stateFlow.emitStepWithEvent<SplashScreenFakeSteps.CheckAppVersion>(FakeState.Error)
+                stateFlow.emitScopedState<SplashScreenFakeSteps.CheckAppVersion>(FakeState.Error)
             }
         }
 
