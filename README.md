@@ -17,10 +17,16 @@
 The concept of scopedstate focuses on scopes and states
 
 As an example, there is a currency screen which has different features like auto-updating prices or manually updating, real-time data or auto-updating date and time.
-So let's create scope for those features.
+
+So let's define scope for those features as follows
 
 ``` kotlin
 sealed class CurrencyScreenScope {
-    object Initial : ExampleScope()
+    object Initial : CurrencyScreenScope()
+    object AutomatedPriceUpdates : CurrencyScreenScope()
+    object ManualPriceUpdates : CurrencyScreenScope()
+    object AutomatedDateAndTimeUpdates : CurrencyScreenScope()
 }
 ```
+Now that we have different scopes, yay! 😎</br>
+But now you might ask yourself, what is the point of having different scopes for my features, right!?
