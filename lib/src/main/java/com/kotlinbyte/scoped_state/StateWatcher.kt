@@ -36,7 +36,7 @@ class StateWatcher() {
         val currentScopeState
             get() = currentScope?.let {
                 scopeDefinitions[it]
-            } ?: throw NullPointerException()
+            } ?: throw UnknownScopeException()
 
 
         internal val scopeDefinitions =
@@ -67,7 +67,6 @@ class StateWatcher() {
         }
 
         fun <S : SCOPE> trigger(scope: TypeMatcher<SCOPE, S>) {
-            Log.e("taggg", "Current scope trigger")
             currentScope = scope
         }
 
