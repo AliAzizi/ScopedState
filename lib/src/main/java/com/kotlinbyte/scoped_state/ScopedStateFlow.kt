@@ -5,46 +5,75 @@ import kotlinx.coroutines.flow.StateFlow
 
 
 interface ScopedStateFlow<SCOPE> :
-    StateFlow<ScopedState<StateWatcher.TypeMatcher<SCOPE, SCOPE>, StateWatcher.BaseState>>
+    StateFlow<ScopedState<TypeMatcher<SCOPE, SCOPE>, StateWatcher.BaseState>>
+
 
 class MutableScopedStateFlow<SCOPE> private constructor(
-    private val stateFlow: MutableStateFlow<ScopedState<StateWatcher.TypeMatcher<SCOPE, SCOPE>, StateWatcher.BaseState>>
+    private val stateFlow: MutableStateFlow<ScopedState<TypeMatcher<SCOPE, SCOPE>, StateWatcher.BaseState>>
 ) :
     ScopedStateFlow<SCOPE>,
-    MutableStateFlow<ScopedState<StateWatcher.TypeMatcher<SCOPE, SCOPE>, StateWatcher.BaseState>> by stateFlow {
+    MutableStateFlow<ScopedState<TypeMatcher<SCOPE, SCOPE>, StateWatcher.BaseState>> by stateFlow {
 
-    companion object {
-        fun <SCOPE, S : SCOPE> create(
-            scope: Class<S>
-        ) = MutableScopedStateFlow<SCOPE>(
-            MutableStateFlow(ScopedState.Scope(StateWatcher.TypeMatcher.create(scope)))
-        )
+    suspend fun emit(state: StateWatcher.BaseState) {
+        emit(ScopedState.fromScope(state))
+    }
+
+    suspend fun emit(
+        scope: TypeMatcher<SCOPE, SCOPE>,
+        state: StateWatcher.BaseState
+    ) {
+        emit(ScopedState.fromBoth(scope, state))
     }
 
     suspend inline fun <reified S : SCOPE> emit() {
         emit(ScopedState.fromScope<SCOPE, S>())
     }
 
-    suspend fun emit(e: StateWatcher.BaseState) {
-        emit(ScopedState.fromScope(e))
+    @JvmName("emitScopedState")
+    suspend inline fun <reified S : SCOPE> emit(state: StateWatcher.BaseState) {
+        emit(TypeMatcher.create<SCOPE, S>(), state)
     }
 
-
-    suspend inline fun <reified S : SCOPE> emitScopedState(state: StateWatcher.BaseState) {
-        emitScopedState(StateWatcher.TypeMatcher.create<SCOPE, S>(), state)
-    }
-
-    suspend inline fun emitScopedState(
-        scope: StateWatcher.TypeMatcher<SCOPE, SCOPE>,
-        state: StateWatcher.BaseState
-    ) {
-        emit(ScopedState.fromBoth(scope, state))
-    }
-
-
-
-    override suspend fun emit(value: ScopedState<StateWatcher.TypeMatcher<SCOPE, SCOPE>, StateWatcher.BaseState>) {
+    override suspend fun emit(value: ScopedState<TypeMatcher<SCOPE, SCOPE>, StateWatcher.BaseState>) {
         stateFlow.emit(value)
     }
 
+    companion object {
+        fun <SCOPE, S : SCOPE> create(
+            scope: Class<S>
+        ) = MutableScopedStateFlow<SCOPE>(
+            MutableStateFlow(ScopedState.Scope(TypeMatcher.create(scope)))
+        )
+
+        fun <SCOPE, S : SCOPE> create(
+            scope: Class<S>,
+            state: StateWatcher.BaseState
+        ) = MutableScopedStateFlow<SCOPE>(
+            MutableStateFlow(ScopedState.Both(TypeMatcher.create(scope), state))
+        )
+
+        inline fun <SCOPE, reified S : SCOPE> create() = create<SCOPE, S>(S::class.java)
+
+        inline fun <SCOPE, reified S : SCOPE> create(e: StateWatcher.BaseState) =
+            create<SCOPE, S>(S::class.java, e)
+    }
+
+    inline fun <reified S : SCOPE, STATE: StateWatcher.BaseState> inScope(noinline block: MutableScopedStateFlow<SCOPE>.InScope<SCOPE, STATE>.() -> Unit) {
+        InScope<SCOPE, STATE>(TypeMatcher.create<SCOPE, S>()).block()
+    }
+
+    inner class InScope<out S : SCOPE, STATE: StateWatcher.BaseState>(private val typeMatcher: TypeMatcher<SCOPE, S>) {
+        suspend fun emit(
+            state: STATE
+        ) {
+            emit(typeMatcher, state)
+        }
+    }
 }
+
+//inline fun <SCOPE, reified S : SCOPE> inScope(
+//    flow: MutableScopedStateFlow<SCOPE>,
+//    noinline block: MutableScopedStateFlow<SCOPE>.(TypeMatcher<SCOPE, S>) -> Unit
+//) {
+//    flow.apply { inScope(block) }
+//}

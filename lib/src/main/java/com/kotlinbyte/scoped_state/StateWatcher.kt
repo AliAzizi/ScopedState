@@ -1,10 +1,16 @@
 package com.kotlinbyte.scoped_state
 
-import androidx.lifecycle.*
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.coroutineScope
+import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import java.lang.NullPointerException
+import kotlin.collections.filter
+import kotlin.collections.firstNotNullOf
+import kotlin.collections.mutableMapOf
+import kotlin.collections.set
 
 class StateWatcher() {
 
@@ -64,7 +70,7 @@ class StateWatcher() {
             trigger(scopeConcrete<S>())
         }
 
-        fun <S : SCOPE> triggerEither(either: ScopedState<TypeMatcher<SCOPE, S>, BaseState>) {
+        fun <S : SCOPE> triggerEither(either: ScopedState<TypeMatcher<SCOPE, S>, BaseState>) =
             either.fold(
                 {
                     trigger(it)
@@ -75,10 +81,8 @@ class StateWatcher() {
                 },
                 { mScope, mState ->
                     triggerBoth(mScope, mState)
-
                 }
             )
-        }
 
 
         class Scope<STATE> internal constructor() {
@@ -110,34 +114,13 @@ class StateWatcher() {
     }
 
 
-    class TypeMatcher<P, out D : P> private constructor(private val clazz: Class<D>) {
-        private val predicates: (P) -> Boolean = { clazz.isInstance(it) }
-
-
-        fun matches(value: P) = predicates(value)
-
-
-        override fun hashCode(): Int {
-            return clazz.hashCode()
-        }
-
-        override fun equals(other: Any?): Boolean {
-            return (hashCode() == other.hashCode())
-        }
-
-        companion object {
-            fun <P, D : P> create(clazz: Class<D>): TypeMatcher<P, D> = TypeMatcher(clazz)
-            inline fun <P, reified D : P> create(): TypeMatcher<P, D> = create(D::class.java)
-        }
-    }
-
     interface BaseState
 
 }
 
 
 fun <SCOPE, S : SCOPE> StateWatcher.ScopeBuilder<SCOPE>.triggerBoth(
-    typeMatcher: StateWatcher.TypeMatcher<SCOPE, S>, state: StateWatcher.BaseState
+    typeMatcher: TypeMatcher<SCOPE, S>, state: StateWatcher.BaseState
 ) {
     trigger(typeMatcher)
     currentScopeState.triggerState(state)
@@ -149,4 +132,3 @@ inline fun <SCOPE, reified S : SCOPE> StateWatcher.ScopeBuilder<SCOPE>.triggerBo
     trigger<S>()
     currentScopeState.triggerState(state)
 }
-

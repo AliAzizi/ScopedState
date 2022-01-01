@@ -67,7 +67,7 @@ class StateWatcherAndroidTest {
 
         runBlocking {
             launch {
-                stateFlow.emitScopedState<SplashScreenFakeScope.CheckAppVersion>(FakeState.Error)
+                stateFlow.emit<SplashScreenFakeScope.CheckAppVersion>(FakeState.Error)
             }
         }
 
@@ -89,7 +89,7 @@ class StateWatcherAndroidTest {
 
         runBlocking {
             launch {
-                stateFlow.emitScopedState<SplashScreenFakeScope.CheckAppVersion>(FakeState.Error)
+                stateFlow.emit<SplashScreenFakeScope.CheckAppVersion>(FakeState.Error)
             }
         }
 

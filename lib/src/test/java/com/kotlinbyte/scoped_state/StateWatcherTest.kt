@@ -24,33 +24,34 @@ class StateWatcherTest {
     }
 
     @Test
-    fun `Generics matching should return false`() {
-        val typeMatcher = StateWatcher.TypeMatcher
+    fun `TypeMatcher matching should return false`() {
+        val typeMatcher = TypeMatcher
             .create<FakeState, FakeState.Error>(FakeState.Error::class.java)
 
         assert(!typeMatcher.matches(FakeState.Success))
     }
 
     @Test
-    fun `Generics matching should return true`() {
-        val typeMatcher = StateWatcher.TypeMatcher
+    fun `TypeMatcher matching should return true`() {
+        val typeMatcher = TypeMatcher
             .create<FakeState, FakeState.Error>(FakeState.Error::class.java)
 
         assert(typeMatcher.matches(FakeState.Error))
     }
 
     @Test
-    fun `Generics should not be equal`() {
-        val typeMatcher1 = StateWatcher.TypeMatcher.create<FakeState, FakeState.Success>()
-        val typeMatcher2 = StateWatcher.TypeMatcher.create<FakeState, FakeState.Error>()
+    fun `TypeMatcher should not be equal`() {
+        val typeMatcher1 = TypeMatcher.create<FakeState, FakeState.Success>()
+        val typeMatcher2 = TypeMatcher.create<FakeState, FakeState.Error>()
 
         assert(typeMatcher1 != typeMatcher2)
     }
 
+
     @Test
-    fun `Generics should be equal`() {
-        val typeMatcher1 = StateWatcher.TypeMatcher.create<FakeState, FakeState.Success>()
-        val typeMatcher2 = StateWatcher.TypeMatcher.create<FakeState, FakeState.Success>()
+    fun `TypeMatcher should be equal`() {
+        val typeMatcher1 = TypeMatcher.create<FakeState, FakeState.Success>()
+        val typeMatcher2 = TypeMatcher.create<FakeState, FakeState.Success>()
 
         assert(typeMatcher1 == typeMatcher2)
     }
@@ -135,7 +136,7 @@ class StateWatcherTest {
 
     @Test
     fun `Scope builder should match specified scope`() {
-        val flow: StateFlow<ScopedState<StateWatcher.TypeMatcher<SplashScreenFakeScope, SplashScreenFakeScope>, FakeState>> =
+        val flow: StateFlow<ScopedState<TypeMatcher<SplashScreenFakeScope, SplashScreenFakeScope>, FakeState>> =
             mockk()
         val scopeBuilder = StateWatcher.ScopeBuilder(flow)
 
@@ -154,7 +155,7 @@ class StateWatcherTest {
 
     @Test
     fun `ScopeBuilder should change current scope correctly`() {
-        val flow: StateFlow<ScopedState<StateWatcher.TypeMatcher<SplashScreenFakeScope, SplashScreenFakeScope>, FakeState>> =
+        val flow: StateFlow<ScopedState<TypeMatcher<SplashScreenFakeScope, SplashScreenFakeScope>, FakeState>> =
             mockk()
         val scopeBuilder = StateWatcher.ScopeBuilder( flow)
 
@@ -179,7 +180,7 @@ class StateWatcherTest {
 
     @Test
     fun `ScopeBuilder should call specified scope and state`() {
-        val flow: StateFlow<ScopedState<StateWatcher.TypeMatcher<SplashScreenFakeScope, SplashScreenFakeScope>, FakeState>> =
+        val flow: StateFlow<ScopedState<TypeMatcher<SplashScreenFakeScope, SplashScreenFakeScope>, FakeState>> =
             mockk()
         val scopeBuilder = StateWatcher.ScopeBuilder( flow)
         var isCalled = false
@@ -209,7 +210,7 @@ class StateWatcherTest {
 
     @Test
     fun `ScopeBuilder either scope either state should call specified scope and state`() {
-        val flow: StateFlow<ScopedState<StateWatcher.TypeMatcher<SplashScreenFakeScope, SplashScreenFakeScope>, FakeState>> =
+        val flow: StateFlow<ScopedState<TypeMatcher<SplashScreenFakeScope, SplashScreenFakeScope>, FakeState>> =
             mockk()
         val scopeBuilder = StateWatcher.ScopeBuilder( flow)
         var isCalled = false
