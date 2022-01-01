@@ -52,6 +52,7 @@ class StateWatcherAndroidTest {
         scenario = launchFragmentInContainer(initialState = Lifecycle.State.INITIALIZED) {
             SplashFakeFragment(scopeBuilder)
         }
+        MockKAnnotations.init(this)
     }
 
     @Test
