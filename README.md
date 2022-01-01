@@ -3,7 +3,7 @@
 [![CircleCI](https://img.shields.io/badge/Maintained-yes-green.svg)]()
 [![Android]( https://img.shields.io/github/license/KotlinByte/ScopedState.svg)]()
 [![Android]( https://img.shields.io/github/v/release/KotlinByte/ScopedState.svg)]()
-##### There is no need for complicated code - just define scopes and then add states between brackets :) 🤤 EZPZ right?
+#### There is no need for complicated code - just define scopes and then add states between brackets :) 🤤 EZPZ right?
 
 [![Android]( 	https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)]()
 [![Android]( 	https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/kotlinbyte)
@@ -54,4 +54,14 @@ sealed class AutomatedDateAndTimeUpdateState {
 }
 
 ```
-Now we have different states for each scope, great! 🥳
+Now we have different states for each scope, great! 🥳</br>
+As we move forward, let's create a viewmodel that contains a MutableScopedStateFlow so we can emit cool stuff from it
+``` kotlin
+class CurrencyScreenViewModel : ViewModel() {
+    // By marking it as private, only viewmodel will be able to emit data through it
+    private val _scopedState: MutableScopedStateFlow<CurrencyScreenScope> =
+        MutableScopedStateFlow.create<CurrencyScreenScope, CurrencyScreenScope.Initial>()
+
+    val state: ScopedStateFlow<ExampleScope> = _scopedState
+}
+```
