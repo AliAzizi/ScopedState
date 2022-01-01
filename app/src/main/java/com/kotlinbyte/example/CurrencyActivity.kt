@@ -40,15 +40,5 @@ class CurrencyActivity : AppCompatActivity() {
         }
     }
 
-    fun updateCurrencyListManually(){
 
-    }
-
-    fun autoUpdateCurrencyList (){
-
-    }
-
-    fun updateTime(){
-
-    }
 }
