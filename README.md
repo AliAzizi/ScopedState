@@ -13,7 +13,7 @@
 
 [![template1.png](https://i.postimg.cc/HxRpRCrs/template1.png)](https://postimg.cc/TLjM5FjZ)
 
-## Scoedstate: How to use?
+## Scopedstate: How to use?
 The concept of scopedstate focuses on scopes and states
 
 As an example, there is a currency screen which has different features like auto-updating prices or manually updating, real-time data or auto-updating date and time.
@@ -65,3 +65,19 @@ class CurrencyScreenViewModel : ViewModel() {
     val state: ScopedStateFlow<ExampleScope> = _scopedState
 }
 ```
+A MutableScopedStateFlow can be constructed in a variety of ways, as shown below:
+
+``` kotlin
+// When it is created, initialScope is emitted
+val _scopedState: MutableScopedStateFlow<Scope> = MutableScopedStateFlow.create<Scope, Scope.InitialScope>()
+    
+// Result is same as previous method
+val _scopedState: MutableScopedStateFlow<Scope> = MutableScopedStateFlow.create<Scope, Scope.InitialScope>(Scope.InitialScope::class.java)
+    
+// It emits initialScope with the state of ExampleState.Init when it is created
+val _scopedState: MutableScopedStateFlow<Scope> = MutableScopedStateFlow.create<Scope, Scope.InitialScope>(ExampleState.Init)
+    
+// Result is same as previous method
+val _scopedState: MutableScopedStateFlow<Scope> = MutableScopedStateFlow.create<Scope, Scope.InitialScope>(Scope.InitialScope::class.java, ExampleState.Init)
+```
+
