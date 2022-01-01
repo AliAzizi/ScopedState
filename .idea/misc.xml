@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/layout/activity_currency.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/activity_example.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/currency_item.xml" value="0.22" />
       </map>

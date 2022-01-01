@@ -1,16 +1,20 @@
 package com.kotlinbyte.scoped_state
 
+import android.util.Log
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlin.collections.filter
 import kotlin.collections.firstNotNullOf
 import kotlin.collections.mutableMapOf
 import kotlin.collections.set
+import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KProperty
 
 class StateWatcher() {
 
@@ -27,7 +31,7 @@ class StateWatcher() {
         private val flow: StateFlow<ScopedState<TypeMatcher<SCOPE, SCOPE>, BaseState>>
     ) : LifecycleObserver {
 
-        internal var currentScope: TypeMatcher<SCOPE, SCOPE>? = null
+        internal var currentScope by Synchronize<TypeMatcher<SCOPE, SCOPE>?>(null)
 
         val currentScopeState
             get() = currentScope?.let {
@@ -42,7 +46,7 @@ class StateWatcher() {
             lifecycle.addObserver(this)
             lifecycle.coroutineScope.launch {
                 lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    flow.collect { either ->
+                    flow.buffer().collect { either ->
                         triggerEither(either)
                     }
                 }
@@ -63,6 +67,7 @@ class StateWatcher() {
         }
 
         fun <S : SCOPE> trigger(scope: TypeMatcher<SCOPE, S>) {
+            Log.e("taggg", "Current scope trigger")
             currentScope = scope
         }
 
@@ -105,9 +110,11 @@ class StateWatcher() {
                 stateDefinitions.filter {
                     @Suppress("UNCHECKED_CAST")
                     it.key.matches(state as STATE)
-                }.firstNotNullOf {
+                }.firstNotNullOfOrNull {
+                    it.value
+                }?.let {
                     @Suppress("UNCHECKED_CAST")
-                    it.value.invoke(state as STATE)
+                    it.invoke(state as STATE)
                 }
             }
         }
