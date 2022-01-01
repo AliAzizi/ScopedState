@@ -30,3 +30,28 @@ sealed class CurrencyScreenScope {
 ```
 Now that we have different scopes, yay! 😎</br>
 But now you might ask yourself, what is the point of having different scopes for my features, right!?
+The answer is that every feature has different states, like maybe it is in the loading state, it is in data state, ..., or maybe it has an error.</br>
+Next, let's define different states for each of our scopes as shown below
+``` kotlin
+sealed class AutomatedPriceUpdateStates {
+    object Initial : AutomatedPriceUpdateStates()
+    object Loading : AutomatedPriceUpdateStates()
+    data class Data(val currencies: List<Currency>): AutomatedPriceUpdateStates()
+    object Error: AutomatedPriceUpdateStates()
+}
+
+sealed class ManualPriceUpdateStates {
+    object Loading : ManualPriceUpdateStates()
+    data class Data(val currencies: List<Currency>): ManualPriceUpdateStates()
+    data class Error(val reason: String): ManualPriceUpdateStates()
+}
+
+sealed class AutomatedDateAndTimeUpdateState {
+    data class HoursTicker(val hour:Int) : AutomatedDateAndTimeUpdateState()
+    data class MinutesTicker(val minute:Int) : AutomatedDateAndTimeUpdateState()
+    data class SecondsTicker(val seconds:Int) : AutomatedDateAndTimeUpdateState()
+
+}
+
+```
+Now we have different states for each scope, great! 🥳
