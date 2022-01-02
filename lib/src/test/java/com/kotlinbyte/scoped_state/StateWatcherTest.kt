@@ -154,7 +154,7 @@ class StateWatcherTest {
     }
 
     @Test
-    fun `ScopeBuilder should change current scope correctly`() {
+    fun `Current scope should be changed correctly by ScopeBuilder`() {
         val flow: StateFlow<ScopedState<TypeMatcher<SplashScreenFakeScope, SplashScreenFakeScope>, FakeState>> =
             mockk()
         val scopeBuilder = StateWatcher.ScopeBuilder( flow)
