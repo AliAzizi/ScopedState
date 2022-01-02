@@ -2,7 +2,6 @@
 [![CircleCI](https://circleci.com/gh/KotlinByte/ScopedState.svg?style=shield)]()
 [![CircleCI](https://img.shields.io/badge/Maintained-yes-green.svg)]()
 [![Android]( https://img.shields.io/github/license/KotlinByte/ScopedState.svg)]()
-[![Android]( https://img.shields.io/github/v/release/KotlinByte/ScopedState.svg)]()
 #### There is no need for complicated code - just define scopes and then add states between brackets :) 🤤 EZPZ right?
 
 [![Android]( 	https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)]()
