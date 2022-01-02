@@ -70,10 +70,3 @@ class MutableScopedStateFlow<SCOPE> private constructor(
         }
     }
 }
-
-//inline fun <SCOPE, reified S : SCOPE> inScope(
-//    flow: MutableScopedStateFlow<SCOPE>,
-//    noinline block: MutableScopedStateFlow<SCOPE>.(TypeMatcher<SCOPE, S>) -> Unit
-//) {
-//    flow.apply { inScope(block) }
-//}
