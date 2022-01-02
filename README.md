@@ -9,7 +9,16 @@
 [![Android]( 	https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/kotlinbyte)
 [![Android]( 	https://img.shields.io/badge/Kotlin-ff8800?&style=for-the-badge&logo=kotlin&logoColor=white)](https://t.me/kotlinbyte)
 
+### Installation
 
+Gradle
+------
+```
+dependencies {
+    ...
+    implementation 'io.github.kotlinbyte:scoped-state:1.0.0'
+}
+```
 
 [![template1.png](https://i.postimg.cc/HxRpRCrs/template1.png)](https://postimg.cc/TLjM5FjZ)
 
