@@ -111,10 +111,44 @@ class CurrencyScreenViewModel(repo: CurrencyRepo) : ViewModel() {
         _scopedState.emit<CurrencyScreenScope.AutomatedPriceUpdates>(AutomatedPriceUpdateStates.Loading)
         repo.fetch().fold(
             error = {
+                _scopedState.emit<CurrencyScreenScope.AutomatedPriceUpdates>(AutomatedPriceUpdateStates.Error)
             },
-            data = {
+            data = { currencies ->
+                _scopedState.emit<CurrencyScreenScope.AutomatedPriceUpdates>(AutomatedPriceUpdateStates.Data(currencies))
             }
         )
     }
+}
+```
+
+EZ, that's done. You may have noticed that we are duplicating our scope each time! Personally, I don't like it 😂😂</br>
+Therefore, for this usecase, our function is single-purpose and the scope of the emissions is the same. This is where the withScope() function comes into play:
+``` kotlin
+_scopedState.withScope<Scope, BaseState> {
+
+}
+```
+Here's our modified code:
+
+``` kotlin
+class CurrencyScreenViewModel(repo: CurrencyRepo) : ViewModel() {
+    // By marking it as private, only viewmodel will be able to emit data through it
+    private val _scopedState: MutableScopedStateFlow<CurrencyScreenScope> =
+        MutableScopedStateFlow.create<CurrencyScreenScope, CurrencyScreenScope.Initial>()
+
+    val state: ScopedStateFlow<ExampleScope> = _scopedState
+    
+    fun fetchCurrencyListInInterval() = _scopedState.withScope<CurrencyScreenScope.AutomatedPriceUpdates, AutomatedPriceUpdateStates> {
+        emit(AutomatedPriceUpdateStates.Loading)
+        repo.fetch().fold(
+            error = {
+                emit(AutomatedPriceUpdateStates.Error)
+            },
+            data = { currencies ->
+                emit(AutomatedPriceUpdateStates.Data(currencies))
+            }
+        )
+    }
+    
 }
 ```
