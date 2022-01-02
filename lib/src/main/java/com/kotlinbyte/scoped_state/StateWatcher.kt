@@ -31,6 +31,7 @@ class StateWatcher() {
         private val flow: StateFlow<ScopedState<TypeMatcher<SCOPE, SCOPE>, BaseState>>
     ) : LifecycleObserver {
 
+        //For now, synchronization can be omitted, but in the future it will be necessary
         internal var currentScope by Synchronize<TypeMatcher<SCOPE, SCOPE>?>(null)
 
         val currentScopeState

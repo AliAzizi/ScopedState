@@ -3,9 +3,7 @@ package com.kotlinbyte.scoped_state
 class TypeMatcher<P, out D : P> private constructor(private val clazz: Class<D>) {
     private val predicates: (P) -> Boolean = { clazz.isInstance(it) }
 
-
     fun matches(value: P) = predicates(value)
-
 
     override fun hashCode(): Int {
         return clazz.hashCode()
