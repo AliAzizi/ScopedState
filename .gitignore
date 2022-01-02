@@ -94,3 +94,5 @@ lint/tmp/
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+.idea
