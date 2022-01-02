@@ -149,6 +149,8 @@ class CurrencyScreenViewModel(repo: CurrencyRepo) : ViewModel() {
             }
         )
     }
-    
 }
 ```
+
+We have finished our viewmodel, It's time to move on to the activity/fragment
+
