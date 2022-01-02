@@ -176,6 +176,22 @@ class CurrencyActivity : AppCompatActivity() {
     fun setupStateWatcher(){
         StateWatcher.watch(viewModel.scopedStateFlow){
             attach(lifecycle) //important
+            
+            // This is where you can define your scopes
+            
+            scope<CurrencyScreenScope.AutomatedPriceUpdates, AutomatedPriceUpdateStates>{
+            
+                // This is where you can define your states
+                
+                state<AutomatedPriceUpdateStates.Loading> {
+                    // show loading progresss
+                }
+                
+                state<AutomatedPriceUpdateStates.Data>{ currencyList ->
+                    // show currency list
+                }
+                
+            }
         }
     }
     
