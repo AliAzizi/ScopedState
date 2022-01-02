@@ -105,7 +105,7 @@ class CurrencyScreenViewModel(repo: CurrencyRepo) : ViewModel() {
     private val _scopedState: MutableScopedStateFlow<CurrencyScreenScope> =
         MutableScopedStateFlow.create<CurrencyScreenScope, CurrencyScreenScope.Initial>()
 
-    val state: ScopedStateFlow<ExampleScope> = _scopedState
+    val scopedStateFlow: ScopedStateFlow<ExampleScope> = _scopedState
     
     fun fetchCurrencyListInInterval(){
         _scopedState.emit<CurrencyScreenScope.AutomatedPriceUpdates>(AutomatedPriceUpdateStates.Loading)
@@ -136,7 +136,7 @@ class CurrencyScreenViewModel(repo: CurrencyRepo) : ViewModel() {
     private val _scopedState: MutableScopedStateFlow<CurrencyScreenScope> =
         MutableScopedStateFlow.create<CurrencyScreenScope, CurrencyScreenScope.Initial>()
 
-    val state: ScopedStateFlow<ExampleScope> = _scopedState
+    val scopedStateFlow: ScopedStateFlow<ExampleScope> = _scopedState
     
     fun fetchCurrencyListInInterval() = _scopedState.withScope<CurrencyScreenScope.AutomatedPriceUpdates, AutomatedPriceUpdateStates> {
         emit(AutomatedPriceUpdateStates.Loading)
@@ -152,5 +152,32 @@ class CurrencyScreenViewModel(repo: CurrencyRepo) : ViewModel() {
 }
 ```
 
-We have finished our viewmodel, It's time to move on to the activity/fragment
+We have finished our viewmodel, It's time to move on to the activity/fragment</br>
+In order to change the UI based on scope and state of an activity or fragment, we need to collect them from ScopedStateFlow. This can be accomplished with StateWatcher:
 
+``` kotlin
+StateWatcher.watch(ScopedStateFlow){
+    //stuff
+}
+```
+
+Here is how we can apply that to our activity:
+
+``` kotlin
+class CurrencyActivity : AppCompatActivity() {
+    
+    lateinit var viewModel: CurrencyScreenViewModel
+    
+    override fun onCreate(savedInstanceState: Bundle?) {
+        // setup views + viewmodel
+        setupStateWatcher()
+    }
+    
+    fun setupStateWatcher(){
+        StateWatcher.watch(viewModel.scopedStateFlow){
+            attach(lifecycle) //important
+        }
+    }
+    
+}
+```
