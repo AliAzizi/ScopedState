@@ -81,3 +81,40 @@ val _scopedState: MutableScopedStateFlow<Scope> = MutableScopedStateFlow.create<
 val _scopedState: MutableScopedStateFlow<Scope> = MutableScopedStateFlow.create<Scope, Scope.InitialScope>(Scope.InitialScope::class.java, ExampleState.Init)
 ```
 
+> **_NOTE:_** When you're trying to create MutableScopedState, you need to specify a scope for initializing stateflow!</br>
+> **_TIPS:_** The initial state can be specified as well, but it's optional
+
+As with stateflow, MutableScopedStateFlow has emit() method too :
+
+``` kotlin
+//emits scope
+_scopedState.emit<Scope>()
+
+//emits state
+_scopedState.emit(state)
+
+//emits scope and state
+_scopedState.emit<Scope>(state)
+```
+
+Let's apply them to our use case 
+
+``` kotlin
+class CurrencyScreenViewModel(repo: CurrencyRepo) : ViewModel() {
+    // By marking it as private, only viewmodel will be able to emit data through it
+    private val _scopedState: MutableScopedStateFlow<CurrencyScreenScope> =
+        MutableScopedStateFlow.create<CurrencyScreenScope, CurrencyScreenScope.Initial>()
+
+    val state: ScopedStateFlow<ExampleScope> = _scopedState
+    
+    fun fetchCurrencyListInInterval(){
+        _scopedState.emit<CurrencyScreenScope.AutomatedPriceUpdates>(AutomatedPriceUpdateStates.Loading)
+        repo.fetch().fold(
+            error = {
+            },
+            data = {
+            }
+        )
+    }
+}
+```
