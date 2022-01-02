@@ -97,5 +97,24 @@ _scopedState.emit(state)
 _scopedState.emit<Scope>(state)
 ```
 
+Let's apply them to our use case 
 
+``` kotlin
+class CurrencyScreenViewModel(repo: CurrencyRepo) : ViewModel() {
+    // By marking it as private, only viewmodel will be able to emit data through it
+    private val _scopedState: MutableScopedStateFlow<CurrencyScreenScope> =
+        MutableScopedStateFlow.create<CurrencyScreenScope, CurrencyScreenScope.Initial>()
 
+    val state: ScopedStateFlow<ExampleScope> = _scopedState
+    
+    fun fetchCurrencyListInInterval(){
+        _scopedState.emit<CurrencyScreenScope.AutomatedPriceUpdates>(AutomatedPriceUpdateStates.Loading)
+        repo.fetch().fold(
+            error = {
+            },
+            data = {
+            }
+        )
+    }
+}
+```
