@@ -58,11 +58,11 @@ class MutableScopedStateFlow<SCOPE> private constructor(
             create<SCOPE, S>(S::class.java, e)
     }
 
-    inline fun <reified S : SCOPE, STATE: StateWatcher.BaseState> inScope(noinline block: MutableScopedStateFlow<SCOPE>.InScope<SCOPE, STATE>.() -> Unit) {
-        InScope<SCOPE, STATE>(TypeMatcher.create<SCOPE, S>()).block()
+    inline fun <reified S : SCOPE, STATE: StateWatcher.BaseState> withScope(noinline block: MutableScopedStateFlow<SCOPE>.WithScope<SCOPE, STATE>.() -> Unit) {
+        WithScope<SCOPE, STATE>(TypeMatcher.create<SCOPE, S>()).block()
     }
 
-    inner class InScope<out S : SCOPE, STATE: StateWatcher.BaseState>(private val typeMatcher: TypeMatcher<SCOPE, S>) {
+    inner class WithScope<out S : SCOPE, STATE: StateWatcher.BaseState>(private val typeMatcher: TypeMatcher<SCOPE, S>) {
         suspend fun emit(
             state: STATE
         ) {
