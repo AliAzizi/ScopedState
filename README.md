@@ -81,3 +81,21 @@ val _scopedState: MutableScopedStateFlow<Scope> = MutableScopedStateFlow.create<
 val _scopedState: MutableScopedStateFlow<Scope> = MutableScopedStateFlow.create<Scope, Scope.InitialScope>(Scope.InitialScope::class.java, ExampleState.Init)
 ```
 
+> **_NOTE:_** When you're trying to create MutableScopedState, you need to specify a scope for initializing stateflow!</br>
+> **_TIPS:_** The initial state can be specified as well, but it's optional
+
+As with stateflow, MutableScopedStateFlow has emit() method too :
+
+``` kotlin
+//emits scope
+_scopedState.emit<Scope>()
+
+//emits state
+_scopedState.emit(state)
+
+//emits scope and state
+_scopedState.emit<Scope>(state)
+```
+
+
+
