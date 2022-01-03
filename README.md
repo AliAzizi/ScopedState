@@ -41,20 +41,20 @@ But now you might ask yourself, what is the point of having different scopes for
 The answer is that every feature has different states, like maybe it is in the loading state, it is in data state, ..., or maybe it has an error.</br>
 Next, let's define different states for each of our scopes as shown below
 ``` kotlin
-sealed class AutomatedPriceUpdateStates {
+sealed class AutomatedPriceUpdateStates : StateWatcher.BaseState {
     object Initial : AutomatedPriceUpdateStates()
     object Loading : AutomatedPriceUpdateStates()
     data class Data(val currencies: List<Currency>): AutomatedPriceUpdateStates()
     object Error: AutomatedPriceUpdateStates()
 }
 
-sealed class ManualPriceUpdateStates {
+sealed class ManualPriceUpdateStates : StateWatcher.BaseState {
     object Loading : ManualPriceUpdateStates()
     data class Data(val currencies: List<Currency>): ManualPriceUpdateStates()
     data class Error(val reason: String): ManualPriceUpdateStates()
 }
 
-sealed class AutomatedDateAndTimeUpdateState {
+sealed class AutomatedDateAndTimeUpdateState : StateWatcher.BaseState {
     data class HoursTicker(val hour:Int) : AutomatedDateAndTimeUpdateState()
     data class MinutesTicker(val minute:Int) : AutomatedDateAndTimeUpdateState()
     data class SecondsTicker(val seconds:Int) : AutomatedDateAndTimeUpdateState()
