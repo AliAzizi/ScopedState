@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.util.concurrent.atomic.AtomicReference
 import kotlin.collections.filter
 import kotlin.collections.firstNotNullOf
 import kotlin.collections.mutableMapOf
@@ -32,10 +33,10 @@ class StateWatcher() {
     ) : LifecycleObserver {
 
         //For now, synchronization can be omitted, but in the future it will be necessary
-        internal var currentScope :TypeMatcher<SCOPE, SCOPE>? = null
+        internal var currentScope = AtomicReference<TypeMatcher<SCOPE, SCOPE>?>()
 
         val currentScopeState
-            get() = currentScope?.let {
+            get() = currentScope.get()?.let {
                 scopeDefinitions[it]
             } ?: throw UnknownScopeException()
 
@@ -68,7 +69,7 @@ class StateWatcher() {
         }
 
         fun <S : SCOPE> trigger(scope: TypeMatcher<SCOPE, S>) {
-            currentScope = scope
+            currentScope.set(scope)
         }
 
         inline fun <reified S : SCOPE> trigger() {
