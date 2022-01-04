@@ -170,7 +170,7 @@ class StateWatcherTest {
         scopeBuilder.trigger<SplashScreenFakeScope.Authorize>()
 
         assert(
-            scopeBuilder.currentScope != null && scopeBuilder.currentScope!!.matches(
+            scopeBuilder.currentScope != null && scopeBuilder.currentScope!!.get()!!.matches(
                 SplashScreenFakeScope.Authorize
             )
         )

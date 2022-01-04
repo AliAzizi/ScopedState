@@ -1,21 +1,15 @@
 package com.kotlinbyte.scoped_state
 
-import android.util.Log
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.coroutineScope
-import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.*
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.collections.filter
-import kotlin.collections.firstNotNullOf
 import kotlin.collections.mutableMapOf
 import kotlin.collections.set
-import kotlin.properties.ReadWriteProperty
-import kotlin.reflect.KProperty
+import androidx.lifecycle.Lifecycle
 
 class StateWatcher() {
 
@@ -30,16 +24,20 @@ class StateWatcher() {
 
     class ScopeBuilder<SCOPE> internal constructor(
         private val flow: StateFlow<ScopedState<TypeMatcher<SCOPE, SCOPE>, BaseState>>
-    ) : LifecycleObserver {
+    ) : DefaultLifecycleObserver {
 
-        //For now, synchronization can be omitted, but in the future it will be necessary
-        internal var currentScope = AtomicReference<TypeMatcher<SCOPE, SCOPE>?>()
+        internal var currentScope: AtomicReference<TypeMatcher<SCOPE, SCOPE>?>? =
+            AtomicReference<TypeMatcher<SCOPE, SCOPE>?>()
+
+        override fun onDestroy(owner: LifecycleOwner) {
+            super.onDestroy(owner)
+            currentScope = null
+        }
 
         val currentScopeState
-            get() = currentScope.get()?.let {
+            get() = currentScope!!.get()?.let {
                 scopeDefinitions[it]
             } ?: throw UnknownScopeException()
-
 
         internal val scopeDefinitions =
             mutableMapOf<TypeMatcher<SCOPE, SCOPE>, Scope<out BaseState>>()
@@ -69,7 +67,7 @@ class StateWatcher() {
         }
 
         fun <S : SCOPE> trigger(scope: TypeMatcher<SCOPE, S>) {
-            currentScope.set(scope)
+            currentScope!!.set(scope)
         }
 
         inline fun <reified S : SCOPE> trigger() {
@@ -120,7 +118,6 @@ class StateWatcher() {
             }
         }
     }
-
 
     interface BaseState
 
