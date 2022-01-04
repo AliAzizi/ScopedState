@@ -18,17 +18,16 @@ class CurrencyActivity : AppCompatActivity() {
         const val TAG = "CurrencyActivity"
     }
 
-    var counter: Int = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this)[CurrencyViewModel::class.java]
         binding = ActivityCurrencyBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupRecyclerView()
+        setupButtons()
         setupStateWatcher()
         viewModel.fetchDateAndTime()
         viewModel.updateCurrencyAutomatically()
-
     }
 
     private fun setupRecyclerView() {
@@ -40,11 +39,27 @@ class CurrencyActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupButtons() {
+        binding.increment.setOnClickListener {
+            viewModel.increment()
+        }
+        binding.decrement.setOnClickListener {
+            viewModel.decrement()
+        }
+
+        binding.increment2.setOnClickListener {
+            viewModel.increment2()
+        }
+        binding.decrement2.setOnClickListener {
+            viewModel.decrement2()
+        }
+    }
+
     private fun setupStateWatcher() = StateWatcher.watch(viewModel.state) {
         attach(lifecycle)
 
-        scope<CurrencyScope.FetchTime, FetchTimeState> {
-            with(binding) {
+        with(binding) {
+            scope<CurrencyScope.FetchTime, FetchTimeState> {
 
                 state<FetchTimeState.Data> {
                     timeProgress.visibility = View.GONE
@@ -59,42 +74,40 @@ class CurrencyActivity : AppCompatActivity() {
                 state<FetchTimeState.Error> {
                     Toast.makeText(applicationContext, it.reason, Toast.LENGTH_LONG).show()
                 }
+            }
 
+            scope<CurrencyScope.FetchCurrency, FetchCurrencyState> {
 
-
-                scope<CurrencyScope.FetchCurrency, FetchCurrencyState> {
-
-                    state<FetchCurrencyState.Data> {
-                        currencyListRecycler.visibility = View.VISIBLE
-                        currencyProgress.visibility = View.INVISIBLE
-                        currencyAdapter.collection = it.currencyDto
-                    }
-
-                    state<FetchCurrencyState.Loading> {
-                        currencyListRecycler.visibility = View.INVISIBLE
-                        currencyProgress.visibility = View.VISIBLE
-                    }
-
-                    state<FetchCurrencyState.Error> {
-                        Toast.makeText(applicationContext, it.reason, Toast.LENGTH_LONG).show()
-                    }
+                state<FetchCurrencyState.Data> {
+                    currencyListRecycler.visibility = View.VISIBLE
+                    currencyProgress.visibility = View.INVISIBLE
+                    currencyAdapter.collection = it.currencyDto
                 }
 
-                scope<CurrencyScope.FetchCurrencyManually, FetchCurrencyManuallyState> {
-
-                    state<FetchCurrencyManuallyState.Data> {
-                        manualProgress.visibility = View.INVISIBLE
-                        btc.text = it.currencyDto.price
-                    }
-
-                    state<FetchCurrencyManuallyState.Loading> {
-                        manualProgress.visibility = View.VISIBLE
-                    }
-
-                    state<FetchCurrencyManuallyState.Error> {
-                        Toast.makeText(applicationContext, it.reason, Toast.LENGTH_LONG).show()
-                    }
+                state<FetchCurrencyState.Loading> {
+                    currencyListRecycler.visibility = View.INVISIBLE
+                    currencyProgress.visibility = View.VISIBLE
                 }
+
+                state<FetchCurrencyState.Error> {
+                    Toast.makeText(applicationContext, it.reason, Toast.LENGTH_LONG).show()
+                }
+            }
+
+            scope<CurrencyScope.CounterScope, CounterState> {
+
+                state<CounterState.Changed> {
+                    counter.text = it.value.toString()
+                }
+
+            }
+
+            scope<CurrencyScope.CounterScope2, CounterState2> {
+
+                state<CounterState2.Changed> {
+                    counter2.text = it.value.toString()
+                }
+
             }
         }
     }

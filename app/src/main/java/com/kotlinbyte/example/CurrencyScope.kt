@@ -7,6 +7,8 @@ sealed class CurrencyScope {
     object FetchTime : CurrencyScope()
     object FetchCurrency : CurrencyScope()
     object FetchCurrencyManually : CurrencyScope()
+    object CounterScope : CurrencyScope()
+    object CounterScope2 : CurrencyScope()
 }
 
 sealed class FetchTimeState : StateWatcher.BaseState {
@@ -26,4 +28,12 @@ sealed class FetchCurrencyManuallyState : StateWatcher.BaseState {
     object Loading : FetchCurrencyManuallyState()
     data class Data(val currencyDto: CurrencyDtoItem) : FetchCurrencyManuallyState()
     data class Error(val reason: String) : FetchCurrencyManuallyState()
+}
+
+sealed class CounterState : StateWatcher.BaseState {
+    data class Changed(val value: Int) : CounterState()
+}
+
+sealed class CounterState2 : StateWatcher.BaseState {
+    data class Changed(val value: Int) : CounterState2()
 }

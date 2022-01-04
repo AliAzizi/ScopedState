@@ -16,6 +16,8 @@ import kotlinx.coroutines.withContext
 
 class CurrencyViewModel : ViewModel() {
     var counter = 0
+    var counter2 = 0
+
     private val _scopedState: MutableScopedStateFlow<CurrencyScope> =
         MutableScopedStateFlow.create<CurrencyScope, CurrencyScope.Initial>()
 
@@ -58,6 +60,34 @@ class CurrencyViewModel : ViewModel() {
 
             }
         }
+
+    fun increment() = _scopedState.withScope<CurrencyScope.CounterScope, CounterState> {
+        viewModelScope.launch {
+            counter++
+            emit(CounterState.Changed(counter))
+        }
+    }
+
+    fun decrement() = _scopedState.withScope<CurrencyScope.CounterScope, CounterState> {
+        viewModelScope.launch {
+            counter--
+            emit(CounterState.Changed(counter))
+        }
+    }
+
+    fun increment2() = _scopedState.withScope<CurrencyScope.CounterScope2, CounterState2> {
+        viewModelScope.launch {
+            counter2++
+            emit(CounterState2.Changed(counter2))
+        }
+    }
+
+    fun decrement2() = _scopedState.withScope<CurrencyScope.CounterScope2, CounterState2> {
+        viewModelScope.launch {
+            counter2--
+            emit(CounterState2.Changed(counter2))
+        }
+    }
 }
 
 object DateTimeResponseDeserializer : ResponseDeserializable<DateTimeDto> {
