@@ -32,7 +32,7 @@ class StateWatcher() {
     ) : LifecycleObserver {
 
         //For now, synchronization can be omitted, but in the future it will be necessary
-        internal var currentScope by Synchronize<TypeMatcher<SCOPE, SCOPE>?>(null)
+        internal var currentScope :TypeMatcher<SCOPE, SCOPE>? = null
 
         val currentScopeState
             get() = currentScope?.let {
