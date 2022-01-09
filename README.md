@@ -24,6 +24,13 @@ dependencies {
 ## Scopedstate: How to use?
 The concept of scopedstate focuses on scopes and states
 
+# Here's what your code looks like after you used scoped state
+
+It's very impressive how you manage your very complicated state so well. That's seperate, clean, and beautiful!
+
+[![2022-01-09-15-51-54.jpg](https://i.postimg.cc/vZs3XPzz/2022-01-09-15-51-54.jpg)](https://postimg.cc/56sB2SDY)
+
+
 As an example, there is a currency screen which has different features like auto-updating prices or manually updating, real-time data or auto-updating date and time.
 
 So let's define scope for those features as follows
